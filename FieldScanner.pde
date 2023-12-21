@@ -29,9 +29,6 @@ Boolean wait = false;
 int k_send_try = 0;
 
 
-//Jst class test
-Rectangle sq = new Rectangle( 200, 200, 15, 15, #747983, #f89300 ); 
-
 //----------------------------------------------------------------------------------------------------------------------
 void setup() 
 {
@@ -41,6 +38,29 @@ void setup()
   serial_rght.update();
   
   model_init();
+  
+  //Upload saved dump into model
+  String filename = "data/init_dump.txt";
+  try {
+    String[] lines = loadStrings(filename);
+  
+    for (int i = 0; i < lines.length; i++) {
+      String[] values = split(lines[i], '\t');
+      
+      if (values.length == 4) {
+        int x = int(values[0]);
+        int y = int(values[1]);
+        int z = int(values[2]);
+        int value = int(values[3]);
+        
+        if (x >= 0 && x < cols && y >= 0 && y < rows && z >= 0 && z < layers) {
+          data[x][y][z] = value;
+        }
+      }
+    }
+  } catch (Exception e) {
+    println("Error loading file: " + e.getMessage());
+  }
 }
 
 
@@ -113,7 +133,7 @@ void keyPressed() {
     serial_left.writeln("G28\r\n");
   }
   if( key == 's' ){
-    serial_left.writeln("G1 X"+X_shift+" Y"+Y_shift+" Z"+Z_shift+"\r\n");
+    serial_left.writeln("G1 X"+X_shift+" Y"+Y_shift+" Z"+Z_shift+"F3000\r\n");
   }
   if( key == 'y' ){
     scan = true;
@@ -121,10 +141,50 @@ void keyPressed() {
     Y_pos = 0;
     Z_pos = 0;
     timeshtamp_start();
+    //model_init();
+  }
+  if( key == '1' ){
+    if( detail_level > 2 ){
+      detail_level--;
+    }
+  }
+  if( key == '2' ){
+    if( detail_level < 5 ){
+      detail_level++;
+    }
+  }
+  if( key == '3' ){
+    if( sphere_size > 6 ){
+      sphere_size--;
+    }
+  }
+  if( key == '4' ){
+    if( sphere_size < 20 ){
+      sphere_size++;
+    }
+  }
+  if( key == '5' ){
+    if( render_uid == true ){
+      render_uid = false;
+    }else{
+      render_uid = true;
+    }
+  }
+  if( key == '7' ){
+    if( slice_x == true ){
+      slice_x = false;
+    }else{
+      slice_x = true;
+    }
+  }
+  if( key == '8' ){
+    if( slice_y == true ){
+      slice_y = false;
+    }else{
+      slice_y = true;
+    }
+  }
+  if( key == 'd' ){
+    println("angleX:"+angleX+" angleY:"+angleY+" zoom:"+zoom);
   }
 }
-
-//void wait_ok(){
-//  wait = false;
-//  println("go");
-//}
