@@ -33,10 +33,19 @@ void control_group(String name, int x, int y)
     btn_click(name,"-");
   }
   
+  
   if( name == "LEFT" ){
     serial_left.set(Toggle(serial_left.get(), x+120, y-25, 40, 20 ));
+    textSize(20);
+    fill(txcolor);
+    textAlign(LEFT, CENTER);
+    text("CNC", x+180, y-17);
   }else{
     serial_rght.set(Toggle(serial_rght.get(), x+120, y-25, 40, 20 ));
+    textSize(20);
+    fill(txcolor);
+    textAlign(RIGHT, CENTER);
+    text("DEVICE", x-10, y-17);
   }
   
   textSize(20);
