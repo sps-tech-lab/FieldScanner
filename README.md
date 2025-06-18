@@ -1,5 +1,6 @@
 # FieldScanner
 
+![](https://img.shields.io/badge/DRAFT-red)
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/sps-tech-lab/FieldScanner?label=version)
 
 
@@ -12,7 +13,7 @@
 The system controls a 3D printer to scan a specified area and receive field strength data from experimental equipment within the range of:
 - 0 - no field
 - 1 - weak field
-- 3 - strong field
+- 2 - strong field
 
 Preview
 ![Appearence](.//Readme/readme_view.png)

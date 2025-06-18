@@ -100,14 +100,14 @@ void draw()
     serial_rght.wait_responde = true;
     
     int[] scan_request = {0x73, 0x63, 0x61, 0x6E, 0x0A};  //ASCII "scan\n" 
-    serial_rght.writearr(scan_request, 1);
+    serial_rght.writearr(scan_request, 5);
     
     println("latch D on");
     while( serial_rght.wait_responde == true ){
       delay(1);
       if( k_send_try++ > 100 ){
         println(minute()+":"+second()+" D Restore[!]");
-        serial_rght.writearr(numbers, 4);
+        serial_rght.writearr(scan_request, 5);
         k_send_try = 0;
         delay(1);
       }
