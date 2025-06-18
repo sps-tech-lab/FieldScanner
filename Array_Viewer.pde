@@ -1,13 +1,16 @@
 int[][][] data;  // 3D array to store values
 
 float side = 30;  // Size of each cube
-float angleX = 2.6;
-float angleY = -2.1;
+float angleX = 1.4000003;
+float angleY = 4.3213367E-7;
 float zoom = 0.5;
 
-int detail_level = 2;
-
-
+int detail_level = 5;
+int sphere_size  = 20;
+Boolean render_uid = true;
+Boolean slice_x = false;
+Boolean slice_y = false;
+Boolean slice_z = false;
 
 void model_init() {
   
@@ -17,7 +20,7 @@ void model_init() {
   for (int i = 0; i < cols; i++) {
     for (int j = 0; j < rows; j++) {
       for (int k = 0; k < layers; k++) {
-        data[i][j][k] = 0;//int(random(3));
+        data[i][j][k] = 0; //int(random(3));
       }
     }
   }
@@ -49,38 +52,54 @@ void model_view() {
         float x = i * side - cols * side / 2;
         float y = j * side - rows * side / 2;
         float z = k * side - layers * side / 2;
+        
+        //Slicer
+        if( slice_x == true && i > cols/2 ){
+          continue;
+        }
+        if( slice_y == true && j > rows/2 ){
+          continue;
+        }
+        if( slice_z == true && k > 2 ){
+          continue;
+        }
 
         pushMatrix();
         translate(x, y, z);
 
         // Set color and transparency based on the value in the array
         if (data[i][j][k] == 1) {
-          fill(0, 0, 255, 127);
+          if( render_uid == true ){
+            fill(0, 0, 255, 127);
+          }else{
+            noFill();
+          }
         } else if (data[i][j][k] == 2) {
           fill(255, 0, 0, 127);
         } else {
           noFill();  // Make cube invisible if value is 0
         }
         
-        if((i==0)&&(j==0)&&(k==0)){
-          fill(0);
-        }
-        if((i==cols-1)&&(j==0)&&(k==0)){
-          fill(255,0,0);
-        }
-         if((i==cols-1)&&(j==rows-1)&&(k==0)){
-          fill(0,255,0);
-        }
+        //Coordinates
+        //if((i==0)&&(j==0)&&(k==0)){
+        //  fill(0);
+        //}
+        //if((i==cols-1)&&(j==0)&&(k==0)){
+        //  fill(255,0,0);
+        //}
+        // if((i==cols-1)&&(j==rows-1)&&(k==0)){
+        //  fill(0,255,0);
+        //}
 
         noStroke();  // Remove strokes
 
         sphereDetail(detail_level);
-        sphere(6);
+        sphere(sphere_size);
         
         if( i == X_pos && j == Y_pos && k == Z_pos ){
-          fill(0);
+          fill(255);
           sphereDetail(8);
-          sphere(10);
+          sphere(15);
         }
         
         popMatrix();
@@ -88,6 +107,8 @@ void model_view() {
       }
     }
   }
+  
+  //Key processing
   if (keyPressed == true) {
     // Use arrow keys to rotate the scene
     if (keyCode == UP) {
