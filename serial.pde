@@ -115,7 +115,7 @@ void serialEvent(Serial port){
       serial_left.wait_responde = false;
     }
   }else{
-    println("KPP> "+trim(input)); 
+    println("DEV> "+trim(input)); 
     data[X_pos][Y_pos][Z_pos] = int(trim(input));
     serial_rght.wait_responde = false;
   }

@@ -96,26 +96,27 @@ void draw()
     }
     println("latch C off");
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
-    //Scan
+    //Request scan from scanning hardware
     serial_rght.wait_responde = true;
-    int[] numbers = {0xE0,0xE0,0x01,0x76};
-    serial_rght.writearr(numbers, 4);
-    println("latch K on");
+    
+    int[] scan_request = {0x73, 0x63, 0x61, 0x6E, 0x0A};  //ASCII "scan\n" 
+    serial_rght.writearr(scan_request, 1);
+    
+    println("latch D on");
     while( serial_rght.wait_responde == true ){
       delay(1);
       if( k_send_try++ > 100 ){
-        println(minute()+":"+second()+" K Restore[!]");
+        println(minute()+":"+second()+" D Restore[!]");
         serial_rght.writearr(numbers, 4);
         k_send_try = 0;
         delay(1);
       }
     }
     k_send_try = 0;
-    println("latch K off");
+    println("latch D off");
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     
     //Store
     appendTextToFile(outFilename, X_pos+"\u0009"+Y_pos+"\u0009"+Z_pos+"\u0009"+data[X_pos][Y_pos][Z_pos]);
-    //println(X_pos+"\u0009"+Y_pos+"\u0009"+Z_pos+"\u0009");
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
     //X
     if( X_revers == false ){
@@ -164,20 +165,24 @@ void draw()
 
 void mouseWheel(MouseEvent event) {
   float e = event.getCount();
-  zoom += e * 0.1; // Adjust the 0.1 factor for faster or slower zooming
-  zoom = constrain(zoom, 0.5, 5.0); // Restrict zoom range
+  zoom += e * 0.1;                    // Adjust the 0.1 factor for faster or slower zooming
+  zoom = constrain(zoom, 0.5, 5.0);   // Restrict zoom range
 }
 
 void keyPressed() {
+  //Goto home position
   if( key == 'h' ){
     serial_left.writeln("G28\r\n");
   }
+  //Goto start position
   if( key == 's' ){
     serial_left.writeln("G1 X"+X_shift+" Y"+Y_shift+" Z"+Z_shift+"F3000\r\n");
   }
+  //Goto temporal position
   if( key == 't' ){
     serial_left.writeln("G1 X"+X_shift+" Y"+Y_shift+" Z"+(Z_shift+100)+"F3000\r\n");
   }
+  //Start scan
   if( key == 'y' ){
     scan = true;
     X_pos = 0;
@@ -186,6 +191,7 @@ void keyPressed() {
     timeshtamp_start();
     model_init();
   }
+  //Visual controls
   if( key == '1' ){
     if( detail_level > 2 ){
       detail_level--;
@@ -234,6 +240,7 @@ void keyPressed() {
       slice_z = true;
     }
   }
+  //Debug helpers
   if( key == 'a' ){
     serial_left.writeln("G1 X"+(X_shift+cols*2)+" Y"+(Y_shift+rows*2)+" Z"+Z_shift+"F3000\r\n");
   }
